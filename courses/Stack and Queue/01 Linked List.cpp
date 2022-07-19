@@ -1,4 +1,5 @@
 // 2022.7.18下午三点开始写，用时一个小时
+// Get It Done on 7.18.2022
 
 #include<iostream>
 using namespace std;
@@ -94,9 +95,13 @@ void Stack_Pop(LStk* stack, int key)
         {
             // 弹栈
             // 更新栈顶元素
+            LStkTop* Otop = stack->top;
             stack->top = stack->top->next;
             stack->count --;
 
+            // 释放空间
+            free(Otop);
+            Otop = NULL;
             cout << key << "成功从栈顶弹出" << endl;
         }
     }
