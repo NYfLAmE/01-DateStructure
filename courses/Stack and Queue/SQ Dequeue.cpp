@@ -1,5 +1,9 @@
 // 自己先用数组实现一个双端队列
 // 截至目前，还差一个用链表实现的队列，一个双向循环链表，一个双端队列
+
+// 7.20.2022晚上九点多开始写数组形式的双端队列，耗时差不多一个小时
+// 第二天十点多开始完善代码，十一点代码完善完毕
+// 至此，数组形式的双端队列完成
 #include<iostream>
 using namespace std;
 
@@ -132,6 +136,7 @@ void Queue_Push(SQ_Dequeue* dequeue, int key)
         dequeue->right = (dequeue->right + 1) % SIZE; 
         dequeue->size ++;
         cout << key << "入队成功" << endl;
+        cout << "此时队尾right == " << dequeue->right << endl;;
     }
 }
 
@@ -150,36 +155,58 @@ void Queue_Pop(SQ_Dequeue* dequeue)
     }
 }
 
-void OutputStack_L(SQ_Dequeue* dequeue)
+void OutputStack_L(SQ_Dequeue dequeue)
 {
-    if (dequeue->size == 0)
+    if (dequeue.size == 0)
     {
         cout << "栈空，无需输出栈元素" << endl;
         return ;
     }
     else
     {
-        while (dequeue->left != SIZE)
+        while (dequeue.left != SIZE)
         {
-            cout << dequeue->element[dequeue->left ++] << ' ';
+            cout << dequeue.element[dequeue.left ++] << ' ';
+            dequeue.size --;
         }
         cout << "OutputStack_L栈输出完毕" << endl;
     }
 }
 
-void OutputQueue(SQ_Dequeue* dequeue)
+
+// R方式输出栈元素
+void OutputStack_R(SQ_Dequeue dequeue)
 {
-    if (dequeue->size == 0)
+    if (dequeue.size == 0)
+    {
+        cout << "栈空，无需进行R输出" << endl;
+        return ;
+    }
+    else
+    {
+        while (dequeue.right != -1)
+        {
+            cout << dequeue.element[dequeue.right --] << ' ';
+            dequeue.size --;
+        }
+
+        cout << "OutputStack_R栈输出完毕" << endl;
+    }
+}
+
+void OutputQueue(SQ_Dequeue dequeue)
+{
+    if (dequeue.size == 0)
     {
         cout << "队空，无需输出元素" << endl;
         return ;
     }
     else
     {
-        while (dequeue->left != dequeue->right)
+        while (dequeue.left != dequeue.right)
         {
-            cout << dequeue->element[dequeue->left] << ' ';
-            dequeue->left = (dequeue->left + 1) % SIZE;
+            cout << dequeue.element[dequeue.left] << ' ';
+            dequeue.left = (dequeue.left + 1) % SIZE;
         }
         cout << "队列输出完毕" << endl;
     }
@@ -187,60 +214,131 @@ void OutputQueue(SQ_Dequeue* dequeue)
 
 int main()
 {
-    // cout << "请选择要使用的数据结构\n1: 栈  2: 队列" << endl;
+    cout << "请选择要使用的数据结构\n1: 栈  2: 队列" << endl;
     
-    // int soq;
-    // cin >> soq;
-    // if (soq == 1)
-    // {
-    //     cout << "请选择初始化栈的方式\n1: L方式  2: R方式  (目前只支持L方式)" << endl;
-    //     int ways; // 这里只是伪数据，还需要完善
-    //     cin >> ways;
-    //     SQ_Dequeue stack;
-    //     Init_Stack_L(&stack);
-
-    //     cout << "请输入需要添加的元素个数" << endl;
-    //     int n;
-    //     cin >> n;
-
-    //     cout << "请输入元素的具体值" << endl;
-    //     int x;
-    //     for (int i = 0; i < n; i ++)
-    //     {
-    //         cin >> x;
-    //         Stack_Push_L(&stack, x);
-    //     }
-
-    //     OutputStack_L(&stack);
-    // }
-
-    int n;
-    cin >> n;
-
-    SQ_Dequeue queue;
-    Init_Queue(&queue);
-    int x;
-    for (int i = 0; i < n; i ++)
+    int soq;
+    cin >> soq;
+    if (soq == 1)
     {
-        cin >> x;
-        Queue_Push(&queue, x);
+        cout << "请选择初始化栈的方式\n1: L方式  2: R方式" << endl;
+        int ways; // 这里只是伪数据，还需要完善
+        cin >> ways;
+        if (ways == 1)
+        {
+            SQ_Dequeue stack;
+            Init_Stack_L(&stack);
+
+            cout << "请输入需要添加的元素个数" << endl;
+            int n;
+            cin >> n;
+
+            cout << "请输入元素的具体值" << endl;
+            int x;
+            for (int i = 0; i < n; i ++)
+            {
+                cin >> x;
+                Stack_Push_L(&stack, x);
+            }
+
+            OutputStack_L(stack);
+
+            cout << "是否需要删除元素？1: YES  2: NO" << endl;
+            int needrm;
+            cin >> needrm;
+            if (needrm == 1)
+            {
+                cout << "请输入要出栈的元素的个数" << endl;
+                int n;
+                cin >> n;
+    
+                for (int i = 0; i < n; i ++)
+                {
+                    Stack_Pop_L(&stack);
+                }
+            }
+
+            OutputStack_L(stack);
+        }
+        else
+        {
+            SQ_Dequeue stack;
+            Init_Stack_R(&stack);
+
+            cout << "请输入需要添加的元素个数" << endl;
+            int n;
+            cin >> n;
+
+            cout << "请输入元素的具体值" << endl;
+            int x;
+            for (int i = 0; i < n; i ++)
+            {
+                cin >> x;
+                Stack_Push_R(&stack, x);
+            }
+
+            OutputStack_R(stack);
+
+            cout << "是否需要删除元素？1: YES  2: NO" << endl;
+            int needrm;
+            cin >> needrm;
+            if (needrm == 1)
+            {
+                cout << "请输入要出栈的元素的个数" << endl;
+                int n;
+                cin >> n;
+    
+                for (int i = 0; i < n; i ++)
+                {
+                    Stack_Pop_R(&stack);
+                }
+            }
+
+            OutputStack_R(stack);
+        }
+        
     }
-
-    int y;
-    cin >> y;
-
-    for (int i = 0; i < y; i ++)
+    // 使用队列结构
+    else
     {
-        Queue_Pop(&queue);
-    }
+        SQ_Dequeue queue;
+        Init_Queue(&queue);
 
-    cin >> n;
-    for (int i = 0; i < n; i ++)
-    {
-        cin >> x;
-        Queue_Push(&queue, x);
+        cout << "请输入需要入队的元素个数" << endl;
+        int n;
+        cin >> n;
+
+        cout << "请输入元素的具体值" << endl;
+        int x;
+        for (int i = 0; i < n; i ++)
+        {
+            cin >> x;
+            Queue_Push(&queue, x);
+        }
+
+        OutputQueue(queue);
+
+        cout << "是否需要删除元素？1: YES  2: NO" << endl;
+        int needrm;
+        cin >> needrm;
+        if (needrm == 1)
+        {
+            cout << "请输入要出队的元素的个数" << endl;
+            int n;
+            cin >> n;
+ 
+            cout << queue.size << endl;
+            for (int i = 0; i < n; i ++)
+            {
+                Queue_Pop(&queue);
+            }
+        }
+
+        OutputQueue(queue);
     }
-    OutputQueue(&queue);
 
     return 0;
 }
+
+    
+
+    
